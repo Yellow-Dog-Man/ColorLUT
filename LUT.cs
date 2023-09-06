@@ -6,6 +6,8 @@ namespace ColorLUT
 {
     public class LUT
     {
+        public string Title { get; set; }
+
         public int Dimensions { get; private set; }
 
         int[] size;
