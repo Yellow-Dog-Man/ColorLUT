@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ColorLUT.CUBE
 {
-    public class CUBE_Reader
+    public class CUBE_Reader : IDisposable
     {
         public string Title { get; private set; }
         public int Dimensions { get; private set; }
@@ -176,6 +176,12 @@ namespace ColorLUT.CUBE
             data = line.Substring(header.Length).Trim();
 
             return true;
+        }
+
+        public void Dispose()
+        {
+            _stream.Dispose();
+            _stream = null;
         }
     }
 }
