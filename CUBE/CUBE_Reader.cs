@@ -15,6 +15,21 @@ namespace ColorLUT.CUBE
         public float MinValue { get; private set; } = 0f;
         public float MaxValue { get; private set; } = 1f;
 
+        public bool ReadAllValues
+        {
+            get
+            {
+                switch(Dimensions)
+                {
+                    case 1: return X == Size;
+                    case 3: return Z == Size;
+
+                    default:
+                        throw new NotImplementedException("Dimensions: " + Dimensions);
+                }
+            }
+        }
+
         public int X { get; private set; }
         public int Y { get; private set; }
         public int Z { get; private set; }
@@ -38,8 +53,8 @@ namespace ColorLUT.CUBE
 
         public void ReadColor(out float r, out float g, out float b)
         {
-            if ((Dimensions == 1 && X == Size) || (Dimensions == 3 && Z == Size))
-                throw new InvalidOperationException("All colors have been read");
+            if (ReadAllValues)
+                throw new InvalidOperationException("All color values have been read");
 
             var line = ReadLine();
 
