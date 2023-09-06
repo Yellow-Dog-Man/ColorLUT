@@ -66,9 +66,9 @@ namespace ColorLUT.CUBE
             if (values.Length != 3)
                 throw new Exception("Expected three values for color value");
 
-            if (!float.TryParse(values[0], out r) ||
-                !float.TryParse(values[1], out g) ||
-                !float.TryParse(values[2], out b))
+            if (!TryParse(values[0], out r) ||
+                !TryParse(values[1], out g) ||
+                !TryParse(values[2], out b))
                 throw new Exception("Failed to parse color value");
 
             X++;
@@ -199,6 +199,8 @@ namespace ColorLUT.CUBE
 
             return true;
         }
+
+        static bool TryParse(string str, out float value) => float.TryParse(str, NumberStyles.Float, CultureInfo.InvariantCulture, out value);
 
         public void Dispose()
         {
