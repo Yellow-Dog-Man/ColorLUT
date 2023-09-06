@@ -19,10 +19,15 @@ namespace ColorLUT.CUBE
         public int Y { get; private set; }
         public int Z { get; private set; }
 
-        TextReader _stream;
+        StreamReader _stream;
         string _unprocessedLine;
 
-        public CUBE_Reader(TextReader stream)
+        public CUBE_Reader(string filePath)
+        {
+            _stream = File.OpenText(filePath);
+        }
+
+        public CUBE_Reader(StreamReader stream)
         {
             _stream = stream;
 
