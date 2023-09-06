@@ -25,6 +25,8 @@ namespace ColorLUT.CUBE
         public CUBE_Reader(string filePath)
         {
             _stream = File.OpenText(filePath);
+
+            ReadHeader();
         }
 
         public CUBE_Reader(StreamReader stream)
