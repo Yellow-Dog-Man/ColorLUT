@@ -13,8 +13,15 @@ namespace ColorLUT.CUBE
         public int Size { get; private set; }
 
         // Not all LUT's include these, so initialize them to some sane defaults
-        public float MinValue { get; private set; } = 0f;
-        public float MaxValue { get; private set; } = 1f;
+        public float MinR { get; private set; } = 0f;
+        public float MinG { get; private set; } = 0f;
+        public float MinB { get; private set; } = 0f;
+        public float MaxR { get; private set; } = 1f;
+        public float MaxG { get; private set; } = 1f;
+        public float MaxB { get; private set; } = 1f;
+
+        public float MinValue { set => MinR = MinG = MinB = value; }
+        public float MaxValue { set => MaxR = MaxG = MaxB = value; }
 
         public bool ReadAllValues
         {

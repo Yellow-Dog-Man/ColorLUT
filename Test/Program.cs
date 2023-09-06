@@ -5,7 +5,7 @@ using (var reader = new CUBE_Reader("FILE"))
     Console.WriteLine($"Title: {reader.Title}\n" +
         $"Dimensions: {reader.Dimensions}\n" +
         $"Size: {reader.Size}\n" +
-        $"MinValue: {reader.MinValue}, MaxValue: {reader.MaxValue}");
+        $"MinValue: [{reader.MinR}, {reader.MinG}, {reader.MinB}], MaxValue: [{reader.MaxR}, {reader.MaxG}, {reader.MaxB}]");
 
     while(!reader.ReadAllValues)
     {
