@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ColorLUT.CUBE
 {
-    public class CUBE_Writer : IDisposable
+    public class CUBE_Writer : CUBE_Base, IDisposable
     {
         public string Title { get; set; }
         public int Dimensions { get; set; }
@@ -28,6 +28,9 @@ namespace ColorLUT.CUBE
         public float DomainMaxR { get; set; } = 1f;
         public float DomainMaxG { get; set; } = 1f;
         public float DomainMaxB { get; set; } = 1f;
+
+        public bool NeedsMoreValues => !WrittenAllValues;
+        public bool WrittenAllValues => ReachedEnd(Dimensions, Size);
 
         StreamWriter _stream;
         bool _headerWritten;
@@ -75,7 +78,12 @@ namespace ColorLUT.CUBE
             if (!_headerWritten)
                 throw new InvalidOperationException("Header must be written first!");
 
+            if (WrittenAllValues)
+                throw new InvalidOperationException("All values have been written!");
+
             _stream.WriteLine(FormattableString.Invariant($"{r} {g} {b}"));
+
+            IncrementPosition(Dimensions, Size);
         }
 
         public void Dispose()

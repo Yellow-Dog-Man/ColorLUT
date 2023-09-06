@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace ColorLUT.CUBE
 {
-    public class CUBE_Reader : IDisposable
+    public class CUBE_Reader : CUBE_Base, IDisposable
     {
         public string Title { get; private set; }
         public int Dimensions { get; private set; }
@@ -31,24 +31,8 @@ namespace ColorLUT.CUBE
         public float DomainMaxG { get; private set; } = 1f;
         public float DomainMaxB { get; private set; } = 1f;
 
-        public bool ReadAllValues
-        {
-            get
-            {
-                switch(Dimensions)
-                {
-                    case 1: return X == Size;
-                    case 3: return Z == Size;
-
-                    default:
-                        throw new NotImplementedException("Dimensions: " + Dimensions);
-                }
-            }
-        }
-
-        public int X { get; private set; }
-        public int Y { get; private set; }
-        public int Z { get; private set; }
+        public bool HasMoreValues => !ReadAllValues;
+        public bool ReadAllValues => ReachedEnd(Dimensions, Size);
 
         StreamReader _stream;
         string _unprocessedLine;
@@ -80,22 +64,7 @@ namespace ColorLUT.CUBE
             if (!TryParseRGB(line, out r, out g, out b))
                 throw new Exception("Failed to parse color value");
 
-            X++;
-
-            if(Dimensions == 3)
-            {
-                if(X == Size)
-                {
-                    X = 0;
-                    Y++;
-                }
-
-                if(Y == Size)
-                {
-                    Y = 0;
-                    Z++;
-                }
-            }
+            IncrementPosition(Dimensions, Size);
         }
 
         void ReadHeader()
