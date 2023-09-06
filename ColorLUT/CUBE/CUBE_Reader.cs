@@ -13,15 +13,23 @@ namespace ColorLUT.CUBE
         public int Size { get; private set; }
 
         // Not all LUT's include these, so initialize them to some sane defaults
-        public float MinR { get; private set; } = 0f;
-        public float MinG { get; private set; } = 0f;
-        public float MinB { get; private set; } = 0f;
-        public float MaxR { get; private set; } = 1f;
-        public float MaxG { get; private set; } = 1f;
-        public float MaxB { get; private set; } = 1f;
+        public float MinValueR { get; private set; } = 0f;
+        public float MinValueG { get; private set; } = 0f;
+        public float MinValueB { get; private set; } = 0f;
+        public float MaxValueR { get; private set; } = 1f;
+        public float MaxValueG { get; private set; } = 1f;
+        public float MaxValueB { get; private set; } = 1f;
 
-        public float MinValue { set => MinR = MinG = MinB = value; }
-        public float MaxValue { set => MaxR = MaxG = MaxB = value; }
+        public float MinValue { set => MinValueR = MinValueG = MinValueB = value; }
+        public float MaxValue { set => MaxValueR = MaxValueG = MaxValueB = value; }
+
+        public float DomainMinR { get; private set; } = 0f;
+        public float DomainMinG { get; private set; } = 0f;
+        public float DomainMinB { get; private set; } = 0f;
+
+        public float DomainMaxR { get; private set; } = 1f;
+        public float DomainMaxG { get; private set; } = 1f;
+        public float DomainMaxB { get; private set; } = 1f;
 
         public bool ReadAllValues
         {
@@ -69,14 +77,7 @@ namespace ColorLUT.CUBE
             if (line == null)
                 throw new Exception("Reached unexpected end of file");
 
-            var values = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-            if (values.Length != 3)
-                throw new Exception("Expected three values for color value");
-
-            if (!TryParse(values[0], out r) ||
-                !TryParse(values[1], out g) ||
-                !TryParse(values[2], out b))
+            if (!TryParseRGB(line, out r, out g, out b))
                 throw new Exception("Failed to parse color value");
 
             X++;
@@ -167,6 +168,30 @@ namespace ColorLUT.CUBE
                 MaxValue = maxValue;
             }
 
+            if(GetHeaderData(line, "DOMAIN_MIN", out data))
+            {
+                if (!TryParseRGB(data, out var r, out var g, out var b))
+                    throw new Exception("Failed to parse DOMAIN_MIN");
+
+                DomainMinR = r;
+                DomainMinG = g;
+                DomainMinB = b;
+
+                return true;
+            }
+
+            if (GetHeaderData(line, "DOMAIN_MAX", out data))
+            {
+                if (!TryParseRGB(data, out var r, out var g, out var b))
+                    throw new Exception("Failed to parse DOMAIN_MAX");
+
+                DomainMaxR = r;
+                DomainMaxG = g;
+                DomainMaxB = b;
+
+                return true;
+            }
+
             // This is not a processed line, we must save it so it get processed properly when parsing the text
             _unprocessedLine = line;
 
@@ -193,6 +218,27 @@ namespace ColorLUT.CUBE
             } while (line != null && (line.StartsWith("#") || string.IsNullOrWhiteSpace(line)));
 
             return line;
+        }
+
+        static bool TryParseRGB(string str, out float r, out float g, out float b)
+        {
+            var values = str.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (values.Length != 3)
+                throw new Exception("Expected three values for color value");
+
+            if (!TryParse(values[0], out r) ||
+                !TryParse(values[1], out g) ||
+                !TryParse(values[2], out b))
+            {
+                r = 0;
+                g = 0;
+                b = 0;
+
+                return false;
+            }
+
+            return true;
         }
 
         static bool GetHeaderData(string line, string header, out string data)
