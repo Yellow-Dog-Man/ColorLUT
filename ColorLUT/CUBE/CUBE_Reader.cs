@@ -20,8 +20,8 @@ namespace ColorLUT.CUBE
         public float MaxValueG { get; private set; } = 1f;
         public float MaxValueB { get; private set; } = 1f;
 
-        public float MinValue { set => MinValueR = MinValueG = MinValueB = value; }
-        public float MaxValue { set => MaxValueR = MaxValueG = MaxValueB = value; }
+        float MinValue { set => MinValueR = MinValueG = MinValueB = value; }
+        float MaxValue { set => MaxValueR = MaxValueG = MaxValueB = value; }
 
         public float DomainMinR { get; private set; } = 0f;
         public float DomainMinG { get; private set; } = 0f;
