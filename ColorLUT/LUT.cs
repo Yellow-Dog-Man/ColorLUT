@@ -17,8 +17,6 @@ namespace ColorLUT
         {
             if (dimensions != size.Length)
                 throw new ArgumentException("Sizes array must match the number of dimensions");
-
-
         }
     }
 }
